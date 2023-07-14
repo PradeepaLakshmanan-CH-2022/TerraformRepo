@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32804.467
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWSCOnsole", "AWSCOnsole\AWSCOnsole.csproj", "{8EA69A3C-7DA7-46C5-87A7-43CFEAEACE7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWSTest", "AWSTest\AWSTest.csproj", "{2B059C06-27F0-4C6A-829A-4C722CD8F598}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8EA69A3C-7DA7-46C5-87A7-43CFEAEACE7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EA69A3C-7DA7-46C5-87A7-43CFEAEACE7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EA69A3C-7DA7-46C5-87A7-43CFEAEACE7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EA69A3C-7DA7-46C5-87A7-43CFEAEACE7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B059C06-27F0-4C6A-829A-4C722CD8F598}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B059C06-27F0-4C6A-829A-4C722CD8F598}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B059C06-27F0-4C6A-829A-4C722CD8F598}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B059C06-27F0-4C6A-829A-4C722CD8F598}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {60E9CFE4-7D26-4205-96E9-EDFDA57A578C}
+	EndGlobalSection
+EndGlobal
