@@ -1,5 +1,5 @@
 resource "aws_codebuild_project" "tf-plan" {
-  name          = "BuildAppConsole"
+  name          = "ConsoleProjectBuild"
   description   = "Plan stage for Terraform"
   service_role  = aws_iam_role.tf-codebuild-role.arn
 
@@ -23,12 +23,12 @@ resource "aws_codebuild_project" "tf-plan" {
 }
 
 resource "aws_codedeploy_app" "code_deploy" {
-  name          = "Deployproject"
+  name          = "ConsoleprojectDeploy"
   compute_platform = "Server"
 }
 resource "aws_codedeploy_deployment_group" "DeployGroup" {
-  app_name               = "Deployproject"
-  deployment_group_name  = "DeployprojectGroup"
+  app_name               = "ConsoleprojectDeploy"
+  deployment_group_name  = "ConsoleprojectDeployGroup"
   service_role_arn      ="arn:aws:iam::606104556660:role/CodeDeployRoleForEc2"  
   deployment_config_name = "CodeDeployDefault.AllAtOnce"
 
@@ -51,7 +51,7 @@ resource "aws_codedeploy_deployment_group" "DeployGroup" {
 
 resource "aws_codepipeline" "cicd_pipeline" {
 
-    name = "CICDConsole"
+    name = "CICDPipelineConsoleApplication"
     role_arn = aws_iam_role.tf-codepipeline-role.arn
 
     artifact_store {
@@ -72,7 +72,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
       version         = "1"
             output_artifacts = ["SourceArtifact"]
             configuration = {
-                FullRepositoryId = "PradeepaLakshmanan-CH-2022/TerraformPipeline"
+                FullRepositoryId = "PradeepaLakshmanan-CH-2022/TerraformRepo"
                 BranchName   = "main"
                 ConnectionArn=var.codestar_connector_credentials
                // ConnectionArn = var.codestar_connector_credentials
@@ -92,7 +92,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
             input_artifacts = ["SourceArtifact"]
             output_artifacts = ["BuildArtifact"]
             configuration = {
-                ProjectName = "BuildAppConsole"
+                ProjectName = "ConsoleProjectBuild"
             }
         }
     }
@@ -110,8 +110,8 @@ resource "aws_codepipeline" "cicd_pipeline" {
     input_artifacts = ["BuildArtifact"]
 
     configuration = {
-      ApplicationName  = "Deployproject"
-      DeploymentGroupName = "DeployprojectGroup"
+      ApplicationName  = "ConsoleprojectDeploy"
+      DeploymentGroupName = "ConsoleprojectDeployGroup"
   
     }
   }
