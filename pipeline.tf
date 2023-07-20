@@ -212,3 +212,51 @@ resource "aws_codepipeline" "cicd_pipeline_tf" {
  
 
 }
+resource "aws_codepipeline" "cicd_terraform" {
+
+    name = "tf-cicd_pipeline"
+    role_arn = aws_iam_role.tf-codepipeline-role.arn
+
+    artifact_store {
+        type="S3"
+        location = aws_s3_bucket.codepipeline_artifacts.id
+    }
+
+    stage {
+    name = "Source"
+
+    action {
+      name            = "Source"
+      category        = "Source"
+      owner           = "AWS"
+      provider        = "CodeStarSourceConnection"
+      version         = "1"
+            output_artifacts = ["SourceArtifact"]
+            configuration = {
+                FullRepositoryId = "PradeepaLakshmanan-CH-2022/TerraformRepo"
+                BranchName   = "main"
+                ConnectionArn=var.codestar_connector_credentials
+                OutputArtifactFormat = "CODE_ZIP"
+            }
+        }
+    }
+
+    stage {
+        name ="Build"
+        action{
+            name = "BuildAction"
+            category = "Build"
+            owner = "AWS"
+            provider = "CodeBuild"
+            version = "1"          
+            input_artifacts = ["SourceArtifact"]
+            output_artifacts = ["BuildArtifact"]
+            configuration = {
+                ProjectName = "tf-cicd-plan2"
+            }
+        }
+    }
+
+ 
+
+}
