@@ -100,113 +100,32 @@ resource "aws_iam_role_policy_attachment" "tf-cicd-codebuild-attachment2" {
     policy_arn  = "arn:aws:iam::aws:policy/PowerUserAccess"
     role        = aws_iam_role.tf-codebuild-role.id
 }
-
-resource "aws_iam_role" "code_deploy_role" {
-  name = "code-deploy-role"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "codedeploy.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_policy" "code_deploy_policy" {
-  name        = "code-deploy-policy"
-  description = "CodeDeploy IAM policy"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "VisualEditor0",
-      "Effect": "Allow",
-      "Action": [
-        "s3:Get*",
-        "s3:List*"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "VisualEditor1",
-      "Effect": "Allow",
-      "Action": [
-        "ec2:*",
-        "elasticloadbalancing:*",
-        "autoscaling:*",
-        "cloudwatch:*",
-        "codedeploy:*",
-        "iam:PassRole"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_role_policy_attachment" "code_deploy_policy_attachment" {
-  role       = aws_iam_role.code_deploy_role.name
-  policy_arn = aws_iam_policy.code_deploy_policy.arn
-}
-
-
 resource "aws_iam_role" "codedeploy_role" {
-  name = "CodeDeployEC2Role"
+  name = "codedeploy-role"
   assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow"
-    }
-  ]
-}
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "",
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "codedeploy.amazonaws.com"
+        },
+        "Action": "sts:AssumeRole"
+      }
+    ]
+  }
 EOF
 }
 
-resource "aws_iam_policy" "codedeploy_policy" {
-  name        = "CodeDeployEC2Policy"
-  description = "IAM policy for EC2 instances to work with CodeDeploy"
 
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "CodeDeployPermissions",
-      "Effect": "Allow",
-      "Action": [
-        "codedeploy:*",
-        "s3:Get*",
-        "s3:List*",
-        "ec2:CreateTags"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-}
 
-resource "aws_iam_role_policy_attachment" "codedeploy_attachment" {
+resource "aws_iam_role_policy_attachment" "codedeploy_policy_attachment" {
   role       = aws_iam_role.codedeploy_role.name
-  policy_arn = aws_iam_policy.codedeploy_policy.arn
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
 }
+
 
 
 
