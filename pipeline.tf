@@ -19,34 +19,11 @@ resource "aws_codebuild_project" "tf-plan" {
  }
  source {
      type   = "CODEPIPELINE"
-     buildspec = file("buildspec/plan-buildspec.yml")
- }
-}
-
-resource "aws_codebuild_project" "tf-apply" {
-  name          = "tf-cicd-apply"
-  description   = "Apply stage for terraform"
-  service_role_arn  = "arn:aws:iam::606104556660:role/service-role/codebuild-Buildapi-service-role"
-
-  artifacts {
-    type = "CODEPIPELINE"
-  }
-
-  environment {
-    compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "hashicorp/terraform:1.4.6"
-    type                        = "LINUX_CONTAINER"
-    image_pull_credentials_type = "SERVICE_ROLE"
-    registry_credential{
-        credential = var.dockerhub_credentials
-        credential_provider = "SECRETS_MANAGER"
-    }
- }
- source {
-     type   = "CODEPIPELINE"
      buildspec = file("buildspec.yml")
  }
 }
+
+
 
 
 
