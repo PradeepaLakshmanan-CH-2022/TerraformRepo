@@ -15,7 +15,6 @@ resource "aws_codebuild_project" "tf-plan" {
 
   source {
     type   = "CODEPIPELINE"
-     # Specify the buildspec file location
     buildspec = "buildspec.yml"
   }
 
