@@ -8,7 +8,9 @@ phases:
     commands:
       - terraform init
       - terraform validate
-  
   build:
     commands:
       - terraform plan
+  post_build:
+    commands:
+      - terraform apply -auto-approve
