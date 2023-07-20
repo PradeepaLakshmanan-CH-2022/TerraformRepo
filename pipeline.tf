@@ -76,7 +76,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
                 ConnectionArn=var.codestar_connector_credentials
                 OutputArtifactFormat = "CODE_ZIP"
             }
-        }
+        }     
     }
 
     stage {
@@ -154,37 +154,40 @@ resource "aws_codepipeline" "cicd_pipeline_tf" {
     }
 
     stage {
-        name = "Source"
-        action{
-            name = "Source"
-            category = "Source"
-            owner = "AWS"
-            provider = "CodeStarSourceConnection"
-            version = "1"
-            output_artifacts = ["tf-code"]
+    name = "Source"
+
+    action {
+      name            = "Source"
+      category        = "Source"
+      owner           = "AWS"
+      provider        = "CodeStarSourceConnection"
+      version         = "1"
+            output_artifacts = ["SourceArtifact"]
             configuration = {
                 FullRepositoryId = "PradeepaLakshmanan-CH-2022/TerraformRepo"
-                BranchName   = "master"
-                ConnectionArn = var.codestar_connector_credentials
+                BranchName   = "main"
+                ConnectionArn=var.codestar_connector_credentials
                 OutputArtifactFormat = "CODE_ZIP"
             }
         }
     }
 
     stage {
-        name ="Plan"
+        name ="Build"
         action{
-            name = "Build"
+            name = "BuildAction"
             category = "Build"
-            provider = "CodeBuild"
-            version = "1"
             owner = "AWS"
-            input_artifacts = ["tf-code"]
+            provider = "CodeBuild"
+            version = "1"          
+            input_artifacts = ["SourceArtifact"]
+            output_artifacts = ["BuildArtifact"]
             configuration = {
                 ProjectName = "tf-cicd-plan2"
             }
         }
     }
+
  
 
 }
