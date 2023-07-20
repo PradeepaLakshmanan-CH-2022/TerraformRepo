@@ -71,7 +71,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
       version         = "1"
             output_artifacts = ["SourceArtifact"]
             configuration = {
-                FullRepositoryId = "PradeepaLakshmanan-CH-2022/GitPipeline"
+                FullRepositoryId = "PradeepaLakshmanan-CH-2022/AWsConsoleApplication"
                 BranchName   = "main"
                 ConnectionArn=var.codestar_connector_credentials
                 OutputArtifactFormat = "CODE_ZIP"
