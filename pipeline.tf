@@ -1,6 +1,6 @@
 resource "aws_codebuild_project" "tf-plan" {
-  name          = "tf-cicd-plan2"
-  description   = "Plan stage for terraform"
+  name          = "NewConsoleProjectBuild"
+  description   = "Plan stage for Terraform"
   service_role  = aws_iam_role.tf-codebuild-role.arn
 
   artifacts {
@@ -8,70 +8,112 @@ resource "aws_codebuild_project" "tf-plan" {
   }
 
   environment {
-    compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "hashicorp/terraform:1.4.6"
-    type                        = "LINUX_CONTAINER"
-    image_pull_credentials_type = "SERVICE_ROLE"
-    registry_credential{
-        credential = var.dockerhub_credentials
-        credential_provider = "SECRETS_MANAGER"
-    }
- }
- source {
-     type   = "CODEPIPELINE"
-     buildspec = file("buildspec.yml")
- }
+    compute_type    = "BUILD_GENERAL1_SMALL"
+    image           = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
+    type            = "LINUX_CONTAINER"
+  }
+
+  source {
+    type   = "CODEPIPELINE"
+     # Specify the buildspec file location
+    buildspec = "buildspec.yml"
+  }
+
+ 
 }
 
+resource "aws_codedeploy_app" "code_deploy" {
+  name          = "NewConsoleAppDeployment"
+  compute_platform = "Server"
+}
+resource "aws_codedeploy_deployment_group" "DeployGroup" {
+  app_name               = "NewConsoleAppDeployment"
+  deployment_group_name  = "NewConsoleAppDeploymentGroup"
+  service_role_arn      ="arn:aws:iam::606104556660:role/codedeploy-role"  
+  deployment_config_name = "CodeDeployDefault.AllAtOnce"
 
 
+  
+  # Use the tags to identify the EC2 instance
+  ec2_tag_set {
+    ec2_tag_filter {
+      key    = "Name"
+      value  = "ConsoleInstance"
+      type   = "KEY_AND_VALUE"
+    }
+
+   
+
+  }
+}
 
 
 
 resource "aws_codepipeline" "cicd_pipeline" {
 
-    name = "tf-cicd"
+    name = "NewGitPipelineConsoleApplication"
     role_arn = aws_iam_role.tf-codepipeline-role.arn
 
     artifact_store {
         type="S3"
         location = aws_s3_bucket.codepipeline_artifacts.id
+
     }
 
-    stage {
-        name = "Source"
-        action{
-            name = "Source"
-            category = "Source"
-            owner = "AWS"
-            provider = "CodeStarSourceConnection"
-            version = "1"
-            output_artifacts = ["tf-code"]
+   stage {
+    name = "Source"
+
+    action {
+      name            = "Source"
+      category        = "Source"
+      owner           = "AWS"
+      provider        = "CodeStarSourceConnection"
+      version         = "1"
+            output_artifacts = ["SourceArtifact"]
             configuration = {
-                FullRepositoryId = "PradeepaLakshmanan-CH-2022/TerraformRepo"
-                BranchName   = "master"
-                ConnectionArn = var.codestar_connector_credentials
+                FullRepositoryId = "PradeepaLakshmanan-CH-2022/GitPipeline"
+                BranchName   = "main"
+                ConnectionArn=var.codestar_connector_credentials
                 OutputArtifactFormat = "CODE_ZIP"
             }
         }
     }
 
     stage {
-        name ="Plan"
+        name ="Build"
         action{
-            name = "Build"
+            name = "BuildAction"
             category = "Build"
-            provider = "CodeBuild"
-            version = "1"
             owner = "AWS"
-            input_artifacts = ["tf-code"]
+            provider = "CodeBuild"
+            version = "1"          
+            input_artifacts = ["SourceArtifact"]
+            output_artifacts = ["BuildArtifact"]
             configuration = {
-                ProjectName = "tf-cicd-plan2"
+                ProjectName = "NewConsoleProjectBuild"
             }
         }
     }
 
+ stage {
+  name = "Deploy"
 
+  action {
+    name            = "DeployEC2"
+    category        = "Deploy"
+    owner           = "AWS"
+    provider        = "CodeDeploy"
+    version = "1"
+    run_order       = 1
+    input_artifacts = ["BuildArtifact"]
+
+    configuration = {
+      ApplicationName  = "NewConsoleAppDeployment"
+      DeploymentGroupName = "NewConsoleAppDeploymentGroup"
+  
+    }
+  }
+}
 
 
 }
