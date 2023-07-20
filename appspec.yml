@@ -1,5 +1,9 @@
 version: 0.2
+
 phases:
+  install:
+    runtime-versions:
+      terraform: 1.4.6
   pre_build:
     commands:
       - terraform init
@@ -7,4 +11,4 @@ phases:
   
   build:
     commands:
-      - terraform apply --auto-approve
+      - terraform apply
