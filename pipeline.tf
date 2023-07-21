@@ -212,9 +212,9 @@ resource "aws_codepipeline" "cicd_pipeline_tf" {
  
 
 }
-resource "aws_codepipeline" "pipelinecicd_terraform" {
+resource "aws_codepipeline" "Mypipelinecicd_terraform" {
 
-    name = "Mytf-cicd"
+    name = "Mytf-cicdpipeline"
     role_arn = aws_iam_role.tf-codepipeline-role.arn
 
     artifact_store {
