@@ -50,7 +50,7 @@ resource "aws_codedeploy_app" "code_deploy" {
 resource "aws_codedeploy_deployment_group" "DeployGroup" {
   app_name               = "NewConsoleAppDeployment"
   deployment_group_name  = "NewConsoleAppDeploymentGroup"
-  service_role_arn      ="arn:aws:iam::606104556660:role/codedeploy-role"  
+  service_role_arn = aws_iam_role.codedeploy_role.arn 
   deployment_config_name = "CodeDeployDefault.AllAtOnce"
 
 
